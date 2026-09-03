@@ -1,4 +1,4 @@
-# Sam Pirkl
+# Sam Pirkl and Soren Patel
 # solution2.py
 
 """
@@ -29,7 +29,7 @@ with open("words.txt", "r") as file:
             # get the count from the dict, if it doesnt exist make it 0. always add 1
             word_freq_dict[word] = word_freq_dict.get(word, 0) + 1
 
-# sort the dict based on values
+# sort the dict based on values, GOT THIS FROM GOOGLE AI
 sorted_dict = sorted(word_freq_dict.items(), key=lambda item: item[1], reverse=True)
     
 # print the top five word counts

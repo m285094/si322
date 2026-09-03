@@ -1,4 +1,4 @@
-# Sam Pirkl
+# Sam Pirkl and Soren Patel
 # solution1.py
 
 """
