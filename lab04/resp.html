@@ -1,0 +1,315 @@
+<HTML>
+<HEAD>
+<TITLE>Schedules - Query Midshipmen : </TITLE>
+<meta name="GENERATOR" content="Oracle Designer Web PL/SQL Generator">
+<SCRIPT>FormType = "Update";</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="FFFFFF" LINK="000080" VLINK="000080"onLoad="return MIDS_OnLoad()">
+<SCRIPT>
+<!-- Hide from old browsers
+var index = 0;
+var DataChangeErrors = false;
+var DataChange = false;
+var P_MIDS_ID = new Array();
+P_MIDS_ID[0] = "79299";
+var P_0 = new Array();
+P_0[0] = "79299";
+var P_18 = new Array();
+P_18[0] = "215253";
+var SCHE_CHK_VALUE = new Array();
+SCHE_CHK_VALUE [0]= 41565;
+function JSLNotNull(pctl, pmsg){
+   if (pctl.value == "") { alert(pmsg); pctl.focus(); return false; }
+   return true;
+}
+function JSLMakeUpper(pctl) {
+   pctl.value = pctl.value.toUpperCase();
+}
+function JSLReplace(pstr1, pstr2, pstr3) {
+   if (pstr1 != "") {
+     var rtnstr = "";
+     var searchstr = pstr1;
+     var addlen = pstr2.length;
+     var index = pstr1.indexOf(pstr2);
+     while ((index != -1) && (searchstr != "")) {
+       rtnstr = rtnstr + searchstr.substring(0, index);
+       if (pstr3 != null) {
+         rtnstr = rtnstr + pstr3;
+       }
+       searchstr = searchstr.substring(index + addlen, searchstr.length);
+       if (searchstr != "") {
+          index = searchstr.indexOf(pstr2);
+       }
+       else { index = -1; }
+     }
+     return (rtnstr + searchstr);
+   }
+   else {
+     return "";
+   }
+}
+function JSLGetValue(pctl, ptype, pfalse) {
+   var i = 0;
+   if (ptype == null) { return pctl.value; }
+   if (ptype == "CHECK") {
+      if (pctl.checked) { return pctl.value; }
+      else { return pfalse; }
+   }
+   if (ptype == "RADIO") {
+      for (i=0;i<pctl.length;i++) {
+         if (pctl[i].checked) { return pctl[i].value; }
+      }
+      return "";
+   }
+   if (ptype == "LIST") {
+      if (pctl.selectedIndex >= 0) {
+         if (pctl.options[pctl.selectedIndex].value != "") {
+            return pctl.options[pctl.selectedIndex].value;
+         }
+         else { return pctl.options[pctl.selectedIndex].text; }
+      }
+      else { return ""; }
+   }
+}
+function JSLStripMask(p_val) {
+  if (p_val == "") { return ""; }
+  var str = p_val;
+  str = JSLReplace(str, " ");
+  str = JSLReplace(str, ",");
+  str = JSLReplace(str, "$");
+  str = JSLReplace(str, "USD");
+
+  if ((str.substring(0, 1) == "<") && (str.substring(str.length -1, str.length) == ">")) {
+      str = "-" + str.substring(1, str.length - 1);
+  }
+  if (str.substring(str.length -1, str.length) == "-") {
+    str = "-" + str.substring(0, str.length - 1);
+  }
+  if (str.substring(str.length -1, str.length) == "+") {
+    str = str.substring(0, str.length - 1);
+  }
+  return str;
+}
+function JSLToNumber(p_val) {
+   var lval = JSLStripMask(p_val);
+   if (lval == "") { return ""; }
+   else { return parseFloat(lval); }
+}
+function JSLChkNumScale (pctl, pval, pscale, pmsg) {
+  if (pval != "") {
+    var PointPos = pval.indexOf(".");
+    if (PointPos != -1) {
+      var Scale = pval.length - PointPos - 1;
+      if (Scale > pscale) {
+        alert(pmsg);
+        pctl.focus();
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function JSLChkNumPrecision(pctl, pval, pprecision, pmsg) {
+  if (pval != "") {
+    var Prec = 0;
+    var PointPos = pval.indexOf(".");
+    // If a decimal point was not found
+    // validate the number of digits in the whole string
+    if (PointPos == -1) {
+      Prec = pval.length;
+    }
+    else {  // Validate the number of digits before the decimal point
+      Prec = PointPos;
+    }
+    if (pval.indexOf("-") == 0) {
+       Prec = Prec - 1;
+    };
+    if (pval.indexOf("+") == 0) {
+       Prec = Prec - 1;
+    };
+
+    if (Prec > pprecision) { alert(pmsg); pctl.focus(); return false; }
+  }
+   return true;
+}
+function JSLCheckModified( p_form, p_action, p_submit ) {
+   var l_mod = false;
+   for (i = 0; i < p_form.z_modified.length; i++)
+   {
+      if (p_form.z_modified[i].value == "Y") {
+         l_mod = true;
+         break;
+      };
+   };
+   if (l_mod) {
+      alert("Data on this page has been modified. Please submit changes or revert before continuing.");
+      return false;
+   } else {
+      p_form.Z_ACTION.value = p_action;
+      if (p_submit) {
+          p_form.submit();
+          return true;
+      }
+   }
+
+
+}
+function JSLRevertForm( p_form, rows ) {
+   for (i = 0; i < p_form.z_modified.length; i++)
+   {
+      if (p_form.z_modified[i].value == "Y") {
+         p_form.z_modified[i].value = "N";
+      }
+   }
+   ResetRadios( p_form, rows );
+   return true;
+}
+function MIDS_OnLoad(ctl, index) {
+
+   if ( FormType != "PostDelete")
+   {
+      form_num=0;
+      do
+      {
+         elem_num=0;
+         len = document.forms[form_num].elements.length;
+         if (len > 0)
+         {
+            while (elem_num < len &&
+                   document.forms[form_num].elements[elem_num].type != "text" &&
+                   document.forms[form_num].elements[elem_num].type != "textarea")
+            {
+               elem_num++;
+            }
+            if (elem_num < len)
+            {
+               document.forms[form_num].elements[elem_num].focus();
+               break;
+            }
+         }
+         form_num++;
+      } while ( form_num < document.forms.length );
+   }
+
+   return true;
+}
+function btnVFU_OnClick(ctl, index) {
+   ctl.form.submit();
+   return true;
+}
+function btnVFD_OnClick(ctl, index) {
+   if (!confirm("Please confirm the Delete")) { return false }
+   ctl.form.Z_ACTION.value = "VerifiedDelete";
+   ctl.form.submit();
+   return true;
+}
+function btnVFR_OnClick(ctl, index) {
+   ctl.form.submit();
+   return true;
+}
+//-->
+</SCRIPT>
+<font color=000080><H2 ALIGN="LEFT"></H2></font>
+<P>
+
+<FONT COLOR="000080">
+<H3><TABLE ><TR><td align="_center"><font size="4" ><b><font color="#000080">Samuel Francis Pirkl /285094/18</b></td><TD COLSPAN="20"><FONT SIZE="2" FACE="Arial">&nbsp;</TD><TD><FONT SIZE="2" FACE="Arial"><A HREF="https://usna.blackboard.com/bbcswebdav/orgs/DEPTCSERV/Midn Photos/2028/M285094.jpg" TARGET="_blank" ><img src="https://usna.blackboard.com/bbcswebdav/orgs/DEPTCSERV/Midn Photos/2028/M285094.jpg"border=0 naturalsizeflag="0" height=75 width=50></A></TD></TR></TABLE><BR>Ac Yr Ending: 2027&nbsp;&nbsp;&nbsp;&nbsp;Semester: FALL&nbsp;&nbsp;&nbsp;&nbsp;Blk Nbr: 1</H3>
+</FONT>
+<FORM ACTION="ActionItem" METHOD="post" NAME="VF$AIFormTop">
+</FORM>
+<P>
+<TABLE >
+<INPUT TYPE="hidden" NAME="P_MIDS_ID" VALUE="79299">
+<INPUT TYPE="hidden" NAME="P_SECOF_ID" VALUE="215253">
+<INPUT TYPE="hidden" NAME="O_MIDS_ID" VALUE="79299">
+<INPUT TYPE="hidden" NAME="O_SECOF_ID" VALUE="215253">
+<INPUT TYPE="hidden" NAME="H_MAJOR" VALUE="COMPUTER SCIENCE">
+<TR VALIGN="TOP"><TD ALIGN="LEFT"><FONT SIZE="2" FACE="Arial"><B>Major:</B></TD><TD ALIGN="LEFT"><FONT SIZE="2" FACE="Arial">COMPUTER SCIENCE</TD></TR>
+<INPUT TYPE="hidden" NAME="H_NOMI_FORMATTED_NAME" VALUE="LCDR Justin Lawrence Downs">
+<TR VALIGN="TOP"><TD ALIGN="LEFT"><FONT SIZE="2" FACE="Arial"><B>Adviser:</B></TD><TD ALIGN="LEFT"><FONT SIZE="2" FACE="Arial">LCDR Justin Lawrence Downs</TD></TR>
+<INPUT TYPE="hidden" NAME="H_SCHEDULE_STATUS" VALUE="">
+<TR VALIGN="TOP"><TD ALIGN="LEFT"><FONT SIZE="2" FACE="Arial"><B>Schedule Status:</B></TD><TD ALIGN="LEFT"><FONT SIZE="2" FACE="Arial">&nbsp;</TD></TR>
+</TR>
+<SCRIPT>
+<!-- Hide from old browsers
+document.write('<INPUT TYPE="hidden" NAME="z_modified" VALUE="N">');
+//-->
+</SCRIPT>
+</TABLE>
+<P>
+<INPUT TYPE="hidden" NAME="Z_ACTION" VALUE="">
+<SCRIPT>
+<!-- Hide from old browsers
+var FormType = "List";
+var P_MIDS_ID2 = new Array();
+P_MIDS_ID2[0] = "79299";
+var P_0 = new Array();
+P_0[0] = "79299";
+var P_18 = new Array();
+P_18[0] = "215253";
+var SCHE_CHK_VALUE = new Array();
+SCHE_CHK_VALUE[0] = 41565;
+var P_22 = new Array();
+var P_23 = new Array();
+//-->
+</SCRIPT>
+<font color=000080><H2 ALIGN="LEFT">Schedule</H2></font>
+<P>
+<P>
+<TABLE  BORDER>
+<TR class = cgrlheaderrow><TH ALIGN="LEFT" ID="TITLE"><FONT SIZE="2" FACE="Arial">Title</TH><TH ALIGN="LEFT" ID="COURSE_NBR"><FONT SIZE="2" FACE="Arial">Course</TH><TH ALIGN="LEFT" ID="SECT"><FONT SIZE="2" FACE="Arial">Section</TH><TH ALIGN="LEFT" ID="SETI_MTG_TIME"><FONT SIZE="2" FACE="Arial">Meeting Time</TH><TH ALIGN="LEFT" ID="BLD_ROOM"><FONT SIZE="2" FACE="Arial">Bld Room</TH><TH ALIGN="LEFT"><FONT SIZE="2" FACE="Arial">Primary Instructor</TH></TR>
+<TR VALIGN="TOP" class = cgrldatarow><TD ALIGN="LEFT" ID="TITLE1"><FONT SIZE="2" FACE="Arial"><A HREF="drgwq010$sche.QueryViewByKey?P_SECOF_ID2=209591&P_MIDS_ID2=79299&P_0=79299&P_18=215253&Z_CHK=56728" TARGET="_top">INTRODUCTION TO AERONAUTICS</A></TD><TD ALIGN="LEFT" ID="COURSE_NBR1"><FONT SIZE="2" FACE="Arial">EA400</TD><TD ALIGN="LEFT" ID="SECT1"><FONT SIZE="2" FACE="Arial">3321</TD><TD ALIGN="LEFT" ID="SETI_MTG_TIME1"><FONT SIZE="2" FACE="Arial">MWF3,T34</TD><TD ALIGN="LEFT" ID="BLD_ROOM1"><FONT SIZE="2" FACE="Arial">RI210</TD><TD ALIGN="LEFT" ID="1"><FONT SIZE="2" FACE="Arial">BARBER</TD></TR>
+<TR VALIGN="TOP" class = cgrldatarow><TD ALIGN="LEFT" ID="TITLE2"><FONT SIZE="2" FACE="Arial"><A HREF="drgwq010$sche.QueryViewByKey?P_SECOF_ID2=213747&P_MIDS_ID2=79299&P_0=79299&P_18=215253&Z_CHK=56214" TARGET="_top">ELECTRICAL FUNDAMENTALS &amp; APPLICATIONS</A></TD><TD ALIGN="LEFT" ID="COURSE_NBR2"><FONT SIZE="2" FACE="Arial">EE301</TD><TD ALIGN="LEFT" ID="SECT2"><FONT SIZE="2" FACE="Arial">5523</TD><TD ALIGN="LEFT" ID="SETI_MTG_TIME2"><FONT SIZE="2" FACE="Arial">MWF5,T56</TD><TD ALIGN="LEFT" ID="BLD_ROOM2"><FONT SIZE="2" FACE="Arial">RI014</TD><TD ALIGN="LEFT" ID="2"><FONT SIZE="2" FACE="Arial">KHAN</TD></TR>
+<TR VALIGN="TOP" class = cgrldatarow><TD ALIGN="LEFT" ID="TITLE3"><FONT SIZE="2" FACE="Arial"><A HREF="drgwq010$sche.QueryViewByKey?P_SECOF_ID2=213942&P_MIDS_ID2=79299&P_0=79299&P_18=215253&Z_CHK=55443" TARGET="_top">MARITIME WARFARE</A></TD><TD ALIGN="LEFT" ID="COURSE_NBR3"><FONT SIZE="2" FACE="Arial">NS300</TD><TD ALIGN="LEFT" ID="SECT3"><FONT SIZE="2" FACE="Arial">2004</TD><TD ALIGN="LEFT" ID="SETI_MTG_TIME3"><FONT SIZE="2" FACE="Arial">TR2</TD><TD ALIGN="LEFT" ID="BLD_ROOM3"><FONT SIZE="2" FACE="Arial">LU007</TD><TD ALIGN="LEFT" ID="3"><FONT SIZE="2" FACE="Arial">BRENNAN</TD></TR>
+<TR VALIGN="TOP" class = cgrldatarow><TD ALIGN="LEFT" ID="TITLE4"><FONT SIZE="2" FACE="Arial"><A HREF="drgwq010$sche.QueryViewByKey?P_SECOF_ID2=209526&P_MIDS_ID2=79299&P_0=79299&P_18=215253&Z_CHK=56214" TARGET="_top">PHYSICAL ED-2/C SWIMMING</A></TD><TD ALIGN="LEFT" ID="COURSE_NBR4"><FONT SIZE="2" FACE="Arial">PE301</TD><TD ALIGN="LEFT" ID="SECT4"><FONT SIZE="2" FACE="Arial">0454</TD><TD ALIGN="LEFT" ID="SETI_MTG_TIME4"><FONT SIZE="2" FACE="Arial">F4</TD><TD ALIGN="LEFT" ID="BLD_ROOM4"><FONT SIZE="2" FACE="Arial">LJ_POOL</TD><TD ALIGN="LEFT" ID="4"><FONT SIZE="2" FACE="Arial">SCHWOB</TD></TR>
+<TR VALIGN="TOP" class = cgrldatarow><TD ALIGN="LEFT" ID="TITLE5"><FONT SIZE="2" FACE="Arial"><A HREF="drgwq010$sche.QueryViewByKey?P_SECOF_ID2=215240&P_MIDS_ID2=79299&P_0=79299&P_18=215253&Z_CHK=53644" TARGET="_top">DATA STRUCTURES</A></TD><TD ALIGN="LEFT" ID="COURSE_NBR5"><FONT SIZE="2" FACE="Arial">SI312</TD><TD ALIGN="LEFT" ID="SECT5"><FONT SIZE="2" FACE="Arial">2001</TD><TD ALIGN="LEFT" ID="SETI_MTG_TIME5"><FONT SIZE="2" FACE="Arial">MWF2</TD><TD ALIGN="LEFT" ID="BLD_ROOM5"><FONT SIZE="2" FACE="Arial">HP108</TD><TD ALIGN="LEFT" ID="5"><FONT SIZE="2" FACE="Arial">CRABBE</TD></TR>
+<TR VALIGN="TOP" class = cgrldatarow><TD ALIGN="LEFT" ID="TITLE6"><FONT SIZE="2" FACE="Arial"><A HREF="drgwq010$sche.QueryViewByKey?P_SECOF_ID2=215241&P_MIDS_ID2=79299&P_0=79299&P_18=215253&Z_CHK=53901" TARGET="_top">COMPUTER NETWORKS</A></TD><TD ALIGN="LEFT" ID="COURSE_NBR6"><FONT SIZE="2" FACE="Arial">SI322</TD><TD ALIGN="LEFT" ID="SECT6"><FONT SIZE="2" FACE="Arial">4341</TD><TD ALIGN="LEFT" ID="SETI_MTG_TIME6"><FONT SIZE="2" FACE="Arial">MW4,R34</TD><TD ALIGN="LEFT" ID="BLD_ROOM6"><FONT SIZE="2" FACE="Arial">HP125,HP101</TD><TD ALIGN="LEFT" ID="6"><FONT SIZE="2" FACE="Arial">BURKE</TD></TR>
+<TR VALIGN="TOP" class = cgrldatarow><TD ALIGN="LEFT" ID="TITLE7"><FONT SIZE="2" FACE="Arial"><A HREF="drgwq010$sche.QueryViewByKey?P_SECOF_ID2=215253&P_MIDS_ID2=79299&P_0=79299&P_18=215253&Z_CHK=54672" TARGET="_top">MACHINE LEARNING &amp; DATA SCIENCE</A></TD><TD ALIGN="LEFT" ID="COURSE_NBR7"><FONT SIZE="2" FACE="Arial">SI470</TD><TD ALIGN="LEFT" ID="SECT7"><FONT SIZE="2" FACE="Arial">6541</TD><TD ALIGN="LEFT" ID="SETI_MTG_TIME7"><FONT SIZE="2" FACE="Arial">MW6,R56</TD><TD ALIGN="LEFT" ID="BLD_ROOM7"><FONT SIZE="2" FACE="Arial">HP123,HP101</TD><TD ALIGN="LEFT" ID="7"><FONT SIZE="2" FACE="Arial">JATHO</TD></TR>
+<TR VALIGN="TOP" class = cgrldatarow><TD ALIGN="LEFT" ID="TITLE8"><FONT SIZE="2" FACE="Arial"><A HREF="drgwq010$sche.QueryViewByKey?P_SECOF_ID2=214365&P_MIDS_ID2=79299&P_0=79299&P_18=215253&Z_CHK=55443" TARGET="_top">PE BLOCKER (MTWRF1)</A></TD><TD ALIGN="LEFT" ID="COURSE_NBR8"><FONT SIZE="2" FACE="Arial">XP105</TD><TD ALIGN="LEFT" ID="SECT8"><FONT SIZE="2" FACE="Arial">11111</TD><TD ALIGN="LEFT" ID="SETI_MTG_TIME8"><FONT SIZE="2" FACE="Arial">MTWRF1</TD><TD ALIGN="LEFT" ID="BLD_ROOM8"><FONT SIZE="2" FACE="Arial">&nbsp</TD><TD ALIGN="LEFT" ID="8"><FONT SIZE="2" FACE="Arial">STAFF</TD></TR>
+</TABLE>
+<P>
+Records 1 to 8 of 8
+<P>
+<P>
+
+<FONT FACE="Arial" SIZE="2">
+<B>Total Credits: </B>
+19
+<P><B>Free Periods: </B>
+M 7 T 7 W 7 R 7 F 67 S 1234567
+</FONT><FONT COLOR="#000080"><H2 ALIGN="LEFT">Schedule Matrix</H2></FONT><TABLE  BORDER cellspacing=0 cellpadding=5 ><TR><TH ALIGN="bottom" ROWSPAN="2" COLSPAN="1"><FONT SIZE="2" FACE="Arial">Period</TH><TH ALIGN="center" ROWSPAN="1" COLSPAN="6"><FONT SIZE="2" FACE="Arial">Day</TH></TR><TR><TH><FONT SIZE="2" FACE="Arial"> &nbsp;MON&nbsp; </TH><TH><FONT SIZE="2" FACE="Arial"> &nbsp;TUE&nbsp; </TH><TH><FONT SIZE="2" FACE="Arial"> &nbsp;WED&nbsp; </TH><TH><FONT SIZE="2" FACE="Arial"> &nbsp;THU&nbsp; </TH><TH><FONT SIZE="2" FACE="Arial"> &nbsp;FRI&nbsp; </TH><TH><FONT SIZE="2" FACE="Arial"> &nbsp;SAT&nbsp; </TH></TR><TR><TD><FONT SIZE="2" FACE="Arial">1</TD><TD><FONT SIZE="2" FACE="Arial">XP105<br></TD><TD><FONT SIZE="2" FACE="Arial">XP105<br></TD><TD><FONT SIZE="2" FACE="Arial">XP105<br></TD><TD><FONT SIZE="2" FACE="Arial">XP105<br></TD><TD><FONT SIZE="2" FACE="Arial">XP105<br></TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD></TR><TR><TD><FONT SIZE="2" FACE="Arial">2</TD><TD><FONT SIZE="2" FACE="Arial">SI312<br></TD><TD><FONT SIZE="2" FACE="Arial">NS300<br></TD><TD><FONT SIZE="2" FACE="Arial">SI312<br></TD><TD><FONT SIZE="2" FACE="Arial">NS300<br></TD><TD><FONT SIZE="2" FACE="Arial">SI312<br></TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD></TR><TR><TD><FONT SIZE="2" FACE="Arial">3</TD><TD><FONT SIZE="2" FACE="Arial">EA400<br></TD><TD><FONT SIZE="2" FACE="Arial">EA400<br></TD><TD><FONT SIZE="2" FACE="Arial">EA400<br></TD><TD><FONT SIZE="2" FACE="Arial">SI322<br></TD><TD><FONT SIZE="2" FACE="Arial">EA400<br></TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD></TR><TR><TD><FONT SIZE="2" FACE="Arial">4</TD><TD><FONT SIZE="2" FACE="Arial">SI322<br></TD><TD><FONT SIZE="2" FACE="Arial">EA400<br></TD><TD><FONT SIZE="2" FACE="Arial">SI322<br></TD><TD><FONT SIZE="2" FACE="Arial">SI322<br></TD><TD><FONT SIZE="2" FACE="Arial">PE301<br></TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD></TR><TR><TD><FONT SIZE="2" FACE="Arial">5</TD><TD><FONT SIZE="2" FACE="Arial">EE301<br></TD><TD><FONT SIZE="2" FACE="Arial">EE301<br></TD><TD><FONT SIZE="2" FACE="Arial">EE301<br></TD><TD><FONT SIZE="2" FACE="Arial">SI470<br></TD><TD><FONT SIZE="2" FACE="Arial">EE301<br></TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD></TR><TR><TD><FONT SIZE="2" FACE="Arial">6</TD><TD><FONT SIZE="2" FACE="Arial">SI470<br></TD><TD><FONT SIZE="2" FACE="Arial">EE301<br></TD><TD><FONT SIZE="2" FACE="Arial">SI470<br></TD><TD><FONT SIZE="2" FACE="Arial">SI470<br></TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD></TR><TR><TD><FONT SIZE="2" FACE="Arial">7</TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD><TD><FONT SIZE="2" FACE="Arial">&nbsp;</TD></TR></TABLE>
+<P>
+<P>
+<IMG SRC="/ows-img/line.gif">
+<BR>
+<A HREF="/ITSD/mids/drgwq010$.showabout" ><img src="/mids-img/help.gif" alt="Module Help" border=0 naturalsizeflag="0" height=20 width=130></A>
+<A HREF="/ITSD/mids/drgwq010$.startup" TARGET="_top" ><IMG SRC="/mids-img/return.gif" ALT="Return back to the first page" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="https://mids.usna.edu" TARGET="_top" ><IMG SRC="/mids-img/midshome.gif" ALT="Back to the Midshipmen Information System"  BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=AC" TARGET="_top" ><IMG SRC="/mids-img/AC.gif" ALT="Return to Academic Center" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=AD" TARGET="_top" ><IMG SRC="/mids-img/AD.gif" ALT="Return to Associate Dean for Academic Affairs" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=CS" TARGET="_top" ><IMG SRC="/mids-img/CS.gif" ALT="Return to Commandant's Staff" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=DC" TARGET="_top" ><IMG SRC="/mids-img/DC.gif" ALT="Return to Department Chair" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=FA" TARGET="_top" ><IMG SRC="/mids-img/FA.gif" ALT="Return to Faculty" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=GA" TARGET="_top" ><IMG SRC="/mids-img/GA.gif" ALT="Return to General Academics" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=LO" TARGET="_top" ><IMG SRC="/mids-img/LO.gif" ALT="Return to Logistics" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=MO" TARGET="_top" ><IMG SRC="/mids-img/MO.gif" ALT="Return to Mid Personnel Office" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=MD" TARGET="_top" ><IMG SRC="/mids-img/MD.gif" ALT="Return to Midshipmen" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=PE" TARGET="_top" ><IMG SRC="/mids-img/PE.gif" ALT="Return to Physical Education" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=PD" TARGET="_top" ><IMG SRC="/mids-img/PD.gif" ALT="Return to Professional Development" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<A HREF="/ITSD/mids/sc_pkg.display_user_urls?p_level1_area_in=RE" TARGET="_top" ><IMG SRC="/mids-img/RE.gif" ALT="Return to Registrar" BORDER=0 naturalsizeflag="0" HEIGHT=20 WIDTH=130></A>
+<a href="sc_pkg.log_off">
+         <img src="/mids-img/midslogoff.gif"
+             alt="Log off"
+             border="0"
+             naturalsizeflag="0"
+             height="20"
+             width="130"></a>
+
+</BODY>
+</HTML>
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'BILENEGNHBHNIKKJCMKMAPHOCEGBLBDKMKOJJOKCGPKNECPAIFIOECCIGCEIJFPNFCKBEPADAODGOKLMHLJALLEHAJMDMKCHCDAMKABINFLMGMKLLOAGACPLACFOGPLM',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr0528938678aaaaaaaaaaaaaaaa_cspm_='+encodeURIComponent(cookie_val)+';path=/;'+'';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;'+';';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script>
